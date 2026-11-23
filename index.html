@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="PhotoApp — зберігайте, редагуйте та діліться важливими моментами.">
+  <meta name="theme-color" content="#0b0b0c">
+  <title>PhotoApp — ваші моменти, по-новому</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">До основного вмісту</a>
+  <header id="header">
+    <div class="container nav">
+      <a class="logo" href="#top" aria-label="PhotoApp — на головну"><span class="logo-icon">✦</span> PhotoApp</a>
+      <button class="menu-toggle" type="button" aria-label="Відкрити меню" aria-expanded="false"><span></span></button>
+      <nav class="nav-links" aria-label="Основна навігація"><a href="#features">Можливості</a><a href="#editor">Редактор</a><a href="#gallery">Галерея</a><a class="button acid" href="#download">Спробувати <span class="arrow">↗</span></a></nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" id="top">
+      <div class="container hero-grid">
+        <div class="hero-content">
+          <span class="pill">Ваші фото. Ваш простір.</span>
+          <h1>Моменти, які хочеться <span>зберегти.</span></h1>
+          <p class="hero-copy">PhotoApp збирає улюблені кадри, допомагає знайти свій стиль і перетворює звичайну галерею на особисту історію.</p>
+          <div class="hero-actions"><a class="button acid" href="#editor">Спробувати редактор <span class="arrow">→</span></a><a class="button ghost" href="#features">Дізнатися більше</a></div>
+        </div>
+        <div class="phone-stage" aria-label="Демонстрація інтерфейсу PhotoApp">
+          <div class="orbit" aria-hidden="true"></div>
+          <div class="floating-card one" aria-hidden="true"><small>Розумна добірка</small><strong>Осінній настрій</strong></div>
+          <div class="phone"><div class="phone-screen">
+            <div class="phone-top"><span>9:41</span><span class="phone-avatar"></span></div><h2 class="phone-title">Сьогодні</h2>
+            <div class="phone-photo"><img src="assets/carpathians.jpg" alt="Мандрівник спостерігає світанок у Карпатах"></div>
+            <div class="phone-caption"><strong>Ранок у Карпатах</strong><span>21 жовтня • Колекція «Подорожі»</span></div>
+            <div class="phone-tools"><button type="button"><b>◐</b>Тон</button><button type="button"><b>⌁</b>Світло</button><button type="button"><b>◇</b>Колір</button><button type="button"><b>↗</b>Share</button></div>
+          </div></div>
+          <div class="floating-card two" aria-hidden="true"><small>Палітра кадру</small><div class="mini-colors"><i></i><i></i><i></i></div></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="ticker" aria-hidden="true"><div class="ticker-track"><span>Зберігайте</span><span>Редагуйте</span><span>Колекціонуйте</span><span>Діліться</span><span>Надихайтеся</span><span>Зберігайте</span><span>Редагуйте</span><span>Колекціонуйте</span><span>Діліться</span><span>Надихайтеся</span></div></div>
+
+    <section id="features"><div class="container">
+      <div class="section-head reveal"><div><span class="kicker">Усе необхідне</span><h2>Менше хаосу.<br>Більше історій.</h2></div><p class="section-intro">Від першого кадру до готової добірки — PhotoApp тримає ваші фотографії впорядкованими, красивими та завжди під рукою.</p></div>
+      <div class="features-grid">
+        <article class="feature reveal"><div class="feature-visual" aria-hidden="true"><div class="stack-card"><svg viewBox="0 0 130 155"><rect width="130" height="155" fill="#ff6a3d"/><circle cx="70" cy="48" r="25" fill="#ffd067"/><path d="M0 118 50 58l30 45 25-28 25 43v37H0z" fill="#3a4740"/></svg></div><div class="stack-card"><svg viewBox="0 0 130 155"><rect width="130" height="155" fill="#a892ff"/><circle cx="47" cy="48" r="25" fill="#caff4a"/><path d="M0 121 44 67l27 31 24-43 35 66v34H0z" fill="#292534"/></svg></div><div class="stack-card"><svg viewBox="0 0 130 155"><rect width="130" height="155" fill="#9db9d4"/><circle cx="90" cy="39" r="20" fill="#ffe099"/><path d="M0 116 35 77l19 20 30-52 46 71v39H0z" fill="#173338"/></svg></div></div><h3>Розумні колекції</h3><p>Групуйте кадри за настроєм, подією або місцем і знаходьте потрібне без нескінченного скролу.</p></article>
+        <article class="feature reveal"><div class="feature-visual" aria-hidden="true"><div class="edit-ring"><span>◐</span></div></div><h3>Легке редагування</h3><p>Колір, світло й готові стилі в одному простому редакторі. Жодних перевантажених панелей.</p></article>
+        <article class="feature reveal"><div class="feature-visual" aria-hidden="true"><div class="share-bubble">↗</div></div><h3>Приватний обмін</h3><p>Створюйте охайні добірки для друзів і близьких та самі вирішуйте, хто їх побачить.</p></article>
+      </div>
+    </div></section>
+
+    <section class="demo" id="editor"><div class="container">
+      <div class="section-head reveal"><div><span class="kicker">Живе демо</span><h2>Один кадр.<br>Різний настрій.</h2></div><p class="section-intro">Оберіть фільтр і змініть насиченість, щоб відчути, як працює мінімалістичний редактор PhotoApp.</p></div>
+      <div class="demo-grid reveal">
+        <div class="demo-photo" id="demo-photo"><img src="assets/coast.jpg" alt="Бірюзова морська затока з помаранчевим каяком"></div>
+        <div class="editor"><span class="kicker">Редактор PhotoApp</span><h3>Ваш стиль — за кілька дотиків.</h3><p>Спробуйте налаштування нижче. Це інтерактивний приклад, який працює прямо у браузері.</p><span class="filter-label">Фільтр</span><div class="filters" role="group" aria-label="Фільтри зображення"><button class="filter-button active" type="button" data-filter="none">Original</button><button class="filter-button" type="button" data-filter="warm">Warm</button><button class="filter-button" type="button" data-filter="mono">Mono</button><button class="filter-button" type="button" data-filter="dream">Dream</button></div><div class="slider-row"><label for="saturation"><span>Насиченість</span><span id="sat-value">100%</span></label><input id="saturation" type="range" min="0" max="160" value="100"></div></div>
+      </div>
+    </div></section>
+
+    <section id="gallery"><div class="container">
+      <div class="gallery-head reveal"><div><span class="kicker">Галерея настроїв</span><h2>Кожен день заслуговує на кадр.</h2></div><a class="button ghost" href="#download">Створити свою <span class="arrow">→</span></a></div>
+      <div class="gallery-grid">
+        <article class="gallery-item reveal"><img src="assets/carpathians.jpg" alt="Світанок над гірськими хребтами Карпат" loading="lazy"><span class="gallery-label">Подорожі</span></article>
+        <article class="gallery-item reveal"><img src="assets/architecture.jpg" alt="Велосипедист серед сучасної бетонної архітектури" loading="lazy"><span class="gallery-label">Архітектура</span></article>
+        <article class="gallery-item reveal"><img src="assets/coast.jpg" alt="Сонячне морське узбережжя та каяк" loading="lazy"><span class="gallery-label">Літо</span></article>
+        <article class="gallery-item reveal"><img src="assets/blue-hour.jpg" alt="Гірське озеро й освітлений будинок у сутінках" loading="lazy"><span class="gallery-label">Вечори</span></article>
+      </div>
+    </div></section>
+
+    <section class="cta" id="download"><div class="container cta-card reveal"><h2>Ваші найкращі моменти вже чекають.</h2><div class="cta-side"><p>Завантажте PhotoApp і перетворіть галерею на простір, куди хочеться повертатися.</p><div class="store-buttons"><button class="store-button" type="button" data-store="App Store"><span>●</span><span><small>Завантажити в</small><b>App Store</b></span></button><button class="store-button" type="button" data-store="Google Play"><span>▶</span><span><small>Завантажити з</small><b>Google Play</b></span></button></div><p id="store-status" role="status" aria-live="polite" style="min-height:24px;margin:14px 0 0;font-size:.82rem"></p></div></div></section>
+  </main>
+
+  <footer><div class="container footer-row"><a class="logo" href="#top"><span class="logo-icon">✦</span> PhotoApp</a><span>© <span id="year"></span> Дизайн-концепт PhotoApp</span><div class="footer-links"><a href="#features">Можливості</a><a href="#top">Нагору ↑</a></div></div></footer>
+
+  <script>
+    const body=document.body,header=document.getElementById('header'),menuButton=document.querySelector('.menu-toggle'),navLinks=document.querySelectorAll('.nav-links a');
+    function setMenu(open){body.classList.toggle('menu-open',open);menuButton.setAttribute('aria-expanded',String(open));menuButton.setAttribute('aria-label',open?'Закрити меню':'Відкрити меню');}
+    menuButton.addEventListener('click',()=>setMenu(!body.classList.contains('menu-open')));navLinks.forEach(link=>link.addEventListener('click',()=>setMenu(false)));
+    function updateHeader(){header.classList.toggle('scrolled',window.scrollY>18);}updateHeader();window.addEventListener('scroll',updateHeader,{passive:true});
+    const revealObserver=new IntersectionObserver(entries=>{entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('visible');revealObserver.unobserve(entry.target);}});},{threshold:.12});document.querySelectorAll('.reveal').forEach(element=>revealObserver.observe(element));
+    const demoImage=document.querySelector('#demo-photo img'),saturation=document.getElementById('saturation'),satValue=document.getElementById('sat-value');let activeFilter='none';
+    function renderFilter(){const sat=saturation.value;const filters={none:`saturate(${sat}%)`,warm:`saturate(${sat}%) sepia(.22) hue-rotate(-12deg) contrast(1.04)`,mono:'saturate(0%) contrast(1.12)',dream:`saturate(${sat}%) hue-rotate(18deg) brightness(1.08)`};demoImage.style.filter=filters[activeFilter];satValue.textContent=`${sat}%`;}
+    document.querySelectorAll('.filter-button').forEach(button=>{button.addEventListener('click',()=>{document.querySelector('.filter-button.active').classList.remove('active');button.classList.add('active');activeFilter=button.dataset.filter;renderFilter();});});saturation.addEventListener('input',renderFilter);
+    document.querySelectorAll('[data-store]').forEach(button=>{button.addEventListener('click',()=>{document.getElementById('store-status').textContent=`${button.dataset.store}: демонстраційна кнопка — додайте реальне посилання на застосунок.`;});});
+    document.getElementById('year').textContent=new Date().getFullYear();
+  </script>
+</body>
+</html>
