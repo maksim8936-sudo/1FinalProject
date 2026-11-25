@@ -1,0 +1,549 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Dream Travel: авторські подорожі під ключ. Напрямки, календар сезонів і заявка на тур.">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style><title>Dream Travel</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Manrope:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: night-sky band with a live boarding pass, then a postcard grid, season chart and booking desk */
+:root{
+  --bg:#F3F7F8; --surface:#FFFFFF; --ink:#0F2733; --muted:#4E6772; --line:#D3E0E4;
+  --sea:#0D6E77; --sea-soft:#DDEFF0; --sun:#F2B33D; --sun-ink:#1B1505;
+  --band:#0F2733; --band-ink:#EAF3F5; --band-muted:#A3BDC6; --band-line:#264553;
+  --ticket-bg:#FBFAF5; --ticket-ink:#0F2733; --ticket-muted:#6A7E86;
+  --cal-2:#0D6E77; --cal-1:#93CACD; --cal-0:#E2EBED;
+  --danger:#B3362B;
+  --f-display:"Unbounded","Arial Black",system-ui,sans-serif;
+  --f-body:"Manrope","Segoe UI",system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+  --radius:14px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0A171D; --surface:#11232B; --ink:#E6F0F2; --muted:#96B0BA; --line:#22404A;
+    --sea:#55C2CA; --sea-soft:#14343C; --sun:#F4BE52; --sun-ink:#1B1505;
+    --band:#06121A; --band-ink:#EAF3F5; --band-muted:#94AEB8; --band-line:#1C3540;
+    --cal-2:#55C2CA; --cal-1:#2A6C72; --cal-0:#1A3139;
+    --danger:#F08A7E;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0A171D; --surface:#11232B; --ink:#E6F0F2; --muted:#96B0BA; --line:#22404A;
+  --sea:#55C2CA; --sea-soft:#14343C; --sun:#F4BE52; --sun-ink:#1B1505;
+  --band:#06121A; --band-ink:#EAF3F5; --band-muted:#94AEB8; --band-line:#1C3540;
+  --cal-2:#55C2CA; --cal-1:#2A6C72; --cal-0:#1A3139;
+  --danger:#F08A7E;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--band)}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--f-display);font-weight:700;line-height:1.12;text-wrap:balance;margin:0}
+h2{font-size:clamp(1.6rem,3.2vw,2.4rem);letter-spacing:-.01em}
+p{margin:0}
+.eyebrow{font-family:var(--f-mono);font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--sea)}
+.lead{color:var(--muted);max-width:60ch;font-size:1.05rem}
+:focus-visible{outline:3px solid var(--sun);outline-offset:3px;border-radius:6px}
+a{color:inherit}
+
+/* Header */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--band);color:var(--band-ink);border-bottom:1px solid var(--band-line)}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:14px}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;font-family:var(--f-display);font-weight:700;font-size:1.05rem;letter-spacing:.01em}
+.logo svg{width:34px;height:34px;flex:none}
+.nav{display:flex;gap:26px;font-size:.95rem}
+.nav a{text-decoration:none;color:var(--band-muted);transition:color .2s}
+.nav a:hover{color:var(--band-ink)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font:700 .95rem/1 var(--f-body);padding:13px 20px;border-radius:999px;border:0;cursor:pointer;text-decoration:none;transition:transform .15s,background .2s,box-shadow .2s}
+.btn-sun{background:var(--sun);color:var(--sun-ink)}
+.btn-sun:hover{transform:translateY(-1px);box-shadow:0 6px 18px -8px var(--sun)}
+.btn-ghost{background:transparent;color:var(--band-ink);border:1.5px solid var(--band-line)}
+.btn-ghost:hover{border-color:var(--band-muted)}
+@media (max-width:820px){.nav{display:none}}
+
+/* Hero */
+.hero{background:var(--band);color:var(--band-ink);overflow:hidden;position:relative}
+.hero::after{content:"";position:absolute;inset:auto 0 0;height:1px;background:var(--band-line)}
+.hero .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center;padding-block:72px 88px}
+.hero h1{font-size:clamp(2.1rem,5vw,3.7rem);letter-spacing:-.02em}
+.hero h1 em{font-style:normal;color:var(--sun)}
+.hero .lead{color:var(--band-muted);margin-top:22px}
+.hero-cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:32px}
+.promises{display:flex;flex-wrap:wrap;gap:10px 28px;margin:40px 0 0;padding:0;list-style:none;font-size:.9rem;color:var(--band-muted)}
+.promises li{display:flex;align-items:center;gap:8px}
+.promises li::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--sun)}
+.hero-copy{min-width:0}
+@media (max-width:900px){.hero .wrap{grid-template-columns:1fr;padding-block:48px 64px;gap:44px}}
+
+/* Ticket */
+.ticket-stage{display:flex;justify-content:center;min-width:0}
+.ticket{display:grid;grid-template-columns:1fr 118px;width:100%;max-width:470px;background:var(--ticket-bg);color:var(--ticket-ink);border-radius:18px;transform:rotate(-2.5deg);box-shadow:0 30px 60px -30px rgba(0,0,0,.7)}
+.t-main{padding:22px 22px 20px;min-width:0}
+.t-head{display:flex;justify-content:space-between;gap:10px;font-family:var(--f-mono);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ticket-muted)}
+.t-head b{color:var(--ticket-ink);font-weight:500}
+.t-route{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;margin:22px 0 20px}
+.t-code{font-family:var(--f-display);font-size:clamp(1.9rem,6vw,2.5rem);font-weight:700;line-height:1;letter-spacing:-.01em}
+.t-city{font-size:.8rem;color:var(--ticket-muted);margin-top:6px}
+.t-route .to{text-align:right}
+.t-path{width:100%;height:34px;min-width:40px}
+.t-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 16px;margin:0;border-top:1.5px dashed #CFD8DA;padding-top:16px}
+.t-grid div{min-width:0}
+.t-grid dt{font-family:var(--f-mono);font-size:.64rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ticket-muted)}
+.t-grid dd{margin:2px 0 0;font-weight:700;font-size:.92rem;font-variant-numeric:tabular-nums}
+.t-stub{position:relative;border-left:2px dashed #CFD8DA;padding:22px 14px 18px;display:flex;flex-direction:column;justify-content:space-between;gap:10px;text-align:center}
+.t-stub::before,.t-stub::after{content:"";position:absolute;left:-12px;width:22px;height:22px;border-radius:50%;background:var(--band)}
+.t-stub::before{top:-11px}.t-stub::after{bottom:-11px}
+.t-stub .t-code{font-size:1.5rem}
+.seat{font-family:var(--f-mono);font-size:.72rem;color:var(--ticket-muted)}
+.seat b{display:block;font-size:1.2rem;color:var(--ticket-ink);font-weight:500}
+.barcode{height:64px;background:repeating-linear-gradient(90deg,#0F2733 0 2px,transparent 2px 4px,#0F2733 4px 5px,transparent 5px 8px,#0F2733 8px 11px,transparent 11px 12px);border-radius:2px}
+.ticket.swap .t-dyn{animation:swap .5s ease}
+@keyframes swap{0%{opacity:.15;transform:translateY(4px)}100%{opacity:1;transform:none}}
+.t-hint{font-size:.82rem;color:var(--band-muted);text-align:center;margin-top:22px}
+@media (max-width:460px){.ticket{grid-template-columns:1fr 92px;transform:rotate(-1.5deg)}.t-main{padding:18px 16px}.t-stub{padding:18px 10px}}
+
+/* Sections */
+section{scroll-margin-top:80px}
+.sec{padding-block:88px}
+.sec-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:20px 40px;margin-bottom:36px}
+.sec-head > div{display:grid;gap:14px;min-width:0}
+
+/* Filters */
+.filters{display:grid;grid-template-columns:auto 1fr;gap:18px 32px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:20px 22px;margin-bottom:28px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font:600 .9rem/1 var(--f-body);padding:10px 16px;border-radius:999px;border:1.5px solid var(--line);background:transparent;color:var(--ink);cursor:pointer;transition:background .2s,border-color .2s}
+.chip:hover{border-color:var(--sea)}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.f-row{display:flex;flex-wrap:wrap;gap:16px 28px;justify-content:flex-end;align-items:center}
+.field{display:grid;gap:6px;min-width:0}
+.field label,.f-label{font-family:var(--f-mono);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+select,input,textarea{font:500 .95rem/1.3 var(--f-body);color:var(--ink);background:var(--bg);border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;width:100%}
+select:focus,input:focus,textarea:focus{outline:none;border-color:var(--sea)}
+input[type=range]{padding:0;border:0;background:transparent;accent-color:var(--sea);width:200px;max-width:100%}
+.budget-out{font-family:var(--f-mono);font-weight:500;font-variant-numeric:tabular-nums;color:var(--ink);font-size:.95rem}
+.count{font-family:var(--f-mono);font-size:.82rem;color:var(--muted)}
+@media (max-width:820px){.filters{grid-template-columns:1fr}.f-row{justify-content:flex-start}}
+
+/* Cards */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:22px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;display:flex;flex-direction:column;transition:transform .25s,box-shadow .25s}
+.card:hover{transform:translateY(-4px);box-shadow:0 18px 40px -24px rgba(15,39,51,.45)}
+.art{position:relative;aspect-ratio:16/10;max-width:100%;overflow:hidden}
+.art svg{display:block;width:100%;height:100%}
+.stamp{position:absolute;top:12px;right:12px;font-family:var(--f-mono);font-size:.7rem;font-weight:500;letter-spacing:.1em;background:rgba(255,255,255,.88);color:#0F2733;padding:5px 9px;border-radius:6px}
+.best{position:absolute;left:12px;top:12px;font-size:.72rem;font-weight:700;background:var(--sun);color:var(--sun-ink);padding:5px 10px;border-radius:999px}
+.c-body{padding:18px 18px 18px;display:flex;flex-direction:column;gap:10px;flex:1}
+.c-country{font-family:var(--f-mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.card h3{font-size:1.25rem}
+.card p{color:var(--muted);font-size:.92rem;line-height:1.5}
+.facts{display:flex;flex-wrap:wrap;gap:6px;margin:2px 0 0;padding:0;list-style:none}
+.facts li{font-size:.78rem;font-weight:600;background:var(--sea-soft);color:var(--sea);padding:4px 9px;border-radius:6px}
+.c-foot{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:auto;padding-top:12px;border-top:1px solid var(--line)}
+.price{font-family:var(--f-display);font-weight:700;font-size:1.2rem;font-variant-numeric:tabular-nums}
+.price small{font-family:var(--f-body);font-weight:500;font-size:.75rem;color:var(--muted);margin-right:4px}
+.pick{font:700 .85rem/1 var(--f-body);background:transparent;color:var(--ink);border:1.5px solid var(--ink);padding:9px 14px;border-radius:999px;cursor:pointer;transition:background .2s,color .2s}
+.pick:hover{background:var(--ink);color:var(--bg)}
+.empty{grid-column:1/-1;text-align:center;padding:48px 20px;border:1.5px dashed var(--line);border-radius:var(--radius);color:var(--muted);display:grid;gap:14px;justify-items:center}
+.empty b{color:var(--ink);font-family:var(--f-display);font-size:1.1rem}
+.note{font-size:.82rem;color:var(--muted);margin-top:18px}
+
+/* Steps */
+.steps-sec{background:var(--surface);border-block:1px solid var(--line)}
+.steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:28px;margin:0;padding:0;list-style:none;counter-reset:s}
+.steps li{display:grid;gap:10px;align-content:start;padding-top:20px;border-top:2px solid var(--ink);counter-increment:s}
+.steps li::before{content:"0" counter(s);font-family:var(--f-mono);font-size:.8rem;color:var(--sea);letter-spacing:.1em}
+.steps h3{font-size:1.05rem}
+.steps p{color:var(--muted);font-size:.93rem}
+@media (max-width:900px){.steps{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:520px){.steps{grid-template-columns:1fr}}
+
+/* Season chart */
+.cal-wrap{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:8px 8px 4px}
+.cal{border-collapse:separate;border-spacing:4px;width:100%;min-width:720px}
+.cal th{font-family:var(--f-mono);font-weight:500;font-size:.72rem;letter-spacing:.06em;color:var(--muted);text-transform:uppercase;padding:6px 2px}
+.cal th.dest{text-align:left;font-family:var(--f-body);font-size:.92rem;font-weight:700;color:var(--ink);text-transform:none;letter-spacing:0;padding-right:12px;white-space:nowrap}
+.cal th.dest span{font-family:var(--f-mono);font-weight:400;font-size:.7rem;color:var(--muted);margin-left:6px}
+.cal td{height:30px;border-radius:6px;padding:0}
+.cal td.l2{background:var(--cal-2)}.cal td.l1{background:var(--cal-1)}.cal td.l0{background:var(--cal-0)}
+.cal .on{box-shadow:inset 0 0 0 2px var(--sun)}
+.cal thead th.on{color:var(--ink);box-shadow:none;background:var(--sun);color:var(--sun-ink);border-radius:6px}
+.legend{display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:16px;font-size:.85rem;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:8px}
+.legend i{width:16px;height:16px;border-radius:4px;display:inline-block}
+
+/* Booking */
+.book{display:grid;grid-template-columns:.85fr 1.15fr;gap:48px;align-items:start}
+.book-info{display:grid;gap:18px;min-width:0}
+.contact{display:grid;gap:14px;margin-top:10px;padding:0;list-style:none}
+.contact li{display:grid;gap:2px}
+.contact .f-label{font-size:.68rem}
+.contact b{font-size:1rem;user-select:all}
+.form{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:28px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.form .full{grid-column:1/-1}
+.form textarea{min-height:96px;resize:vertical}
+.err{color:var(--danger);font-size:.82rem;min-height:0}
+.form .btn{justify-self:start}
+.done{grid-column:1/-1;display:grid;gap:10px;background:var(--sea-soft);border-radius:10px;padding:18px 20px}
+.done b{font-family:var(--f-display);font-size:1.1rem}
+.done p{color:var(--muted);font-size:.9rem}
+@media (max-width:900px){.book{grid-template-columns:1fr;gap:32px}}
+@media (max-width:520px){.form{grid-template-columns:1fr;padding:20px}}
+
+/* Footer */
+footer{background:var(--band);color:var(--band-muted);font-size:.88rem}
+footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:16px;padding-block:28px}
+footer .logo{color:var(--band-ink)}
+</style>
+
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="logo" href="#top" aria-label="Dream Travel, на початок">
+      <svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="19" fill="#F2B33D"/><path d="M8 25h24" stroke="#0F2733" stroke-width="2.4" stroke-linecap="round"/><path d="M12 29.5h16" stroke="#0F2733" stroke-width="2.4" stroke-linecap="round"/><path d="M13 19l12-6-2 5 5 1-12 6 2-5z" fill="#0F2733"/></svg>
+      Dream Travel
+    </a>
+    <nav class="nav" aria-label="Розділи">
+      <a href="#destinations">Напрямки</a>
+      <a href="#how">Як це працює</a>
+      <a href="#seasons">Сезони</a>
+      <a href="#book">Контакти</a>
+    </nav>
+    <a class="btn btn-sun" href="#book">Підібрати тур</a>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="wrap">
+      <div class="hero-copy">
+        <p class="eyebrow" style="color:var(--sun)">Авторські подорожі під ключ</p>
+        <h1 style="margin-top:18px">Куди полетимо <em>цього разу?</em></h1>
+        <p class="lead">Dream Travel складає подорожі під вас: переліт, готелі, трансфери й екскурсії в одному маршруті. Ви обираєте напрямок, ми беремо на себе решту.</p>
+        <div class="hero-cta">
+          <a class="btn btn-sun" href="#destinations">Обрати напрямок</a>
+          <a class="btn btn-ghost" href="#seasons">Коли краще їхати</a>
+        </div>
+        <ul class="promises">
+          <li>Підбір маршруту за 24 години</li>
+          <li>Підтримка 24/7 у дорозі</li>
+          <li>Без прихованих платежів</li>
+        </ul>
+      </div>
+      <div>
+        <div class="ticket-stage">
+          <div class="ticket" id="ticket" aria-live="polite">
+            <div class="t-main">
+              <div class="t-head"><b>Dream Travel</b><span>Посадковий талон</span></div>
+              <div class="t-route">
+                <div><div class="t-code">WAW</div><div class="t-city">Варшава</div></div>
+                <svg class="t-path" viewBox="0 0 120 34" preserveAspectRatio="none" aria-hidden="true"><path d="M2 28 Q60 -6 118 28" fill="none" stroke="#9AAAB0" stroke-width="1.5" stroke-dasharray="4 4" vector-effect="non-scaling-stroke"/><path d="M54 6l10 4-10 4 2-4z" fill="#0F2733"/></svg>
+                <div class="to t-dyn"><div class="t-code" id="tCode">DPS</div><div class="t-city" id="tCity">Балі</div></div>
+              </div>
+              <dl class="t-grid t-dyn">
+                <div><dt>Пасажир</dt><dd>Мандрівник</dd></div>
+                <div><dt>Рейс</dt><dd id="tFlight">DT 0417</dd></div>
+                <div><dt>Найкращий сезон</dt><dd id="tSeason">квіт – жовт</dd></div>
+                <div><dt>Тривалість</dt><dd id="tNights">10 ночей</dd></div>
+              </dl>
+            </div>
+            <div class="t-stub">
+              <div class="t-dyn"><div class="t-code" id="tCode2">DPS</div></div>
+              <div class="seat">Місце<b>12A</b></div>
+              <div class="barcode" aria-hidden="true"></div>
+            </div>
+          </div>
+        </div>
+        <p class="t-hint" id="tHint">Оберіть напрямок нижче, і квиток зміниться</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="destinations">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <p class="eyebrow">Напрямки</p>
+          <h2>Вісім подорожей, з яких варто почати</h2>
+        </div>
+        <p class="lead" style="max-width:44ch">Кожен тур можна змінити: додати ночі, поєднати дві країни або замінити готель.</p>
+      </div>
+
+      <div class="filters" role="search" aria-label="Фільтр турів">
+        <div class="chips" id="chips">
+          <button class="chip" data-cat="all" aria-pressed="true">Усі</button>
+          <button class="chip" data-cat="beach" aria-pressed="false">Пляж</button>
+          <button class="chip" data-cat="mount" aria-pressed="false">Гори й природа</button>
+          <button class="chip" data-cat="city" aria-pressed="false">Міста</button>
+          <button class="chip" data-cat="exotic" aria-pressed="false">Екзотика</button>
+        </div>
+        <div class="f-row">
+          <div class="field">
+            <label for="fMonth">Місяць поїздки</label>
+            <select id="fMonth"></select>
+          </div>
+          <div class="field">
+            <span class="f-label" id="budgetLbl">Бюджет на особу</span>
+            <div style="display:flex;align-items:center;gap:12px">
+              <input type="range" id="fBudget" min="500" max="2200" step="50" value="2200" aria-labelledby="budgetLbl">
+              <output class="budget-out" id="budgetOut" for="fBudget">до €2 200</output>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="count" id="count" aria-live="polite"></p>
+      <div class="grid" id="grid" style="margin-top:14px"></div>
+      <p class="note">Ціни орієнтовні, на одну особу при двомісному розміщенні, з перельотом. Час перельоту вказано з Варшави.</p>
+    </div>
+  </section>
+
+  <section class="sec steps-sec" id="how">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <p class="eyebrow">Як це працює</p>
+          <h2>Від заявки до посадки</h2>
+        </div>
+      </div>
+      <ol class="steps">
+        <li><h3>Розкажіть про мрію</h3><p>Залиште заявку: куди хочеться, коли і з ким. Можна просто «тепле море в березні».</p></li>
+        <li><h3>Отримайте маршрути</h3><p>За добу надішлемо три варіанти з різним бюджетом, готелями та програмою.</p></li>
+        <li><h3>Бронюємо все разом</h3><p>Квитки, готелі, трансфери, страховка. Один договір і всі документи в одному листі.</p></li>
+        <li><h3>Подорожуйте спокійно</h3><p>Менеджер на зв'язку 24/7. Затримали рейс? Ми вже шукаємо заміну.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="sec" id="seasons">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <p class="eyebrow">Календар сезонів</p>
+          <h2>Коли куди їхати</h2>
+        </div>
+        <p class="lead" style="max-width:44ch">Погода, ціни й натовпи змінюються з місяцем. Оберіть місяць у фільтрі вище, і він підсвітиться тут.</p>
+      </div>
+      <div class="cal-wrap">
+        <table class="cal" id="cal"></table>
+      </div>
+      <div class="legend">
+        <span><i style="background:var(--cal-2)"></i>Найкращий час</span>
+        <span><i style="background:var(--cal-1)"></i>Добре, з нюансами</span>
+        <span><i style="background:var(--cal-0)"></i>Не радимо</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec steps-sec" id="book">
+    <div class="wrap book">
+      <div class="book-info">
+        <p class="eyebrow">Заявка</p>
+        <h2>Розплануємо вашу подорож</h2>
+        <p class="lead">Заповніть форму, і менеджер зв'яжеться з вами протягом робочого дня. Консультація безкоштовна.</p>
+        <ul class="contact">
+          <li><span class="f-label">E-mail</span><b>hello@dreamtravel.example</b></li>
+          <li><span class="f-label">Графік</span><b>Пн–Пт 9:00–19:00, Сб 10:00–15:00</b></li>
+          <li><span class="f-label">Підтримка в дорозі</span><b>Цілодобово</b></li>
+        </ul>
+      </div>
+      <form class="form" id="form" novalidate>
+        <div class="field">
+          <label for="bName">Ім'я</label>
+          <input id="bName" name="name" autocomplete="name" placeholder="Олена">
+        </div>
+        <div class="field">
+          <label for="bContact">Телефон або e-mail</label>
+          <input id="bContact" name="contact" placeholder="+380 …">
+        </div>
+        <div class="field">
+          <label for="bDest">Напрямок</label>
+          <select id="bDest" name="dest"></select>
+        </div>
+        <div class="field">
+          <label for="bPeople">Мандрівників</label>
+          <input id="bPeople" name="people" type="number" min="1" max="20" value="2">
+        </div>
+        <div class="field full">
+          <label for="bMonth">Бажаний місяць</label>
+          <select id="bMonth" name="month"></select>
+        </div>
+        <div class="field full">
+          <label for="bMsg">Побажання</label>
+          <textarea id="bMsg" name="msg" placeholder="Готель біля моря, без нічних перельотів, хочемо побачити вулкан…"></textarea>
+        </div>
+        <p class="err full" id="err" hidden></p>
+        <button class="btn btn-sun full" type="submit">Надіслати заявку</button>
+        <div class="done" id="done" hidden>
+          <b id="doneTitle"></b>
+          <p id="doneText"></p>
+          <p>Це демо-версія сайту: форма ще не підключена до пошти чи CRM, тож заявка нікуди не надсилається.</p>
+        </div>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span class="logo">Dream Travel</span>
+    <span>© 2026 Dream Travel. Подорожі, які хочеться згадувати.</span>
+  </div>
+</footer>
+
+<script>
+(function(){
+const MONTHS=['Січень','Лютий','Березень','Квітень','Травень','Червень','Липень','Серпень','Вересень','Жовтень','Листопад','Грудень'];
+const MSHORT=['січ','лют','бер','квіт','трав','черв','лип','серп','вер','жовт','лист','груд'];
+
+/* ---------- illustrations ---------- */
+const W=s=>`<svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true">${s}</svg>`;
+const sky=(id,a,b)=>`<defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${b}"/></linearGradient></defs><rect width="320" height="200" fill="url(#${id})"/>`;
+const waves=(y,c)=>{let p='';for(let i=0;i<3;i++){p+=`<path d="M${-30+i*11} ${y+14+i*15} q10 -4 20 0${' t20 0'.repeat(18)}" fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round" opacity="${(.75-i*.18).toFixed(2)}"/>`}return p};
+const ART={
+  bali:()=>{let leaves='';[-165,-130,-95,-55,-20,15].forEach(a=>{leaves+=`<ellipse cx="104" cy="88" rx="30" ry="6" fill="#1F4D3A" transform="rotate(${a} 104 88) translate(26 0)"/>`});
+    return W(sky('gBali','#FF8E6E','#FFD9A6')+`<circle cx="214" cy="122" r="36" fill="#FFF0C4"/><rect y="128" width="320" height="72" fill="#16707E"/>`+waves(128,'#BCEDEB')+`<path d="M60 200 C70 160 84 118 104 88" stroke="#3A2A1F" stroke-width="7" fill="none" stroke-linecap="round"/>`+leaves)},
+  maldives:()=>{let b='';[40,96,152].forEach(x=>{b+=`<path d="M${x+4} 116v18M${x+30} 116v18" stroke="#7B5236" stroke-width="3"/><rect x="${x}" y="103" width="34" height="14" fill="#D6A574"/><polygon points="${x-5},104 ${x+17},88 ${x+39},104" fill="#8A5A3B"/>`});
+    return W(sky('gMal','#6CCBE4','#E8FBFF')+`<circle cx="262" cy="46" r="20" fill="#FFF6C8"/><rect y="116" width="320" height="84" fill="#23AFBE"/><ellipse cx="240" cy="160" rx="120" ry="18" fill="#7FE0D6" opacity=".7"/><rect x="20" y="132" width="190" height="4" fill="#A87B55"/>`+b+waves(140,'#E8FFFD'))},
+  dolomites:()=>W(sky('gDol','#8FC3EE','#EAF4FF')+`<circle cx="66" cy="48" r="17" fill="#FFF3C4"/><polygon points="0,140 40,84 70,112 112,46 150,104 190,62 230,102 272,38 320,96 320,200 0,200" fill="#93A9C4"/><polygon points="112,46 100,66 108,63 114,70 122,61" fill="#fff"/><polygon points="272,38 259,60 268,56 274,64 283,55" fill="#fff"/><polygon points="190,62 182,75 190,72 197,76" fill="#fff"/><polygon points="0,172 60,122 100,150 162,98 222,152 270,116 320,150 320,200 0,200" fill="#4C6684"/><path d="M0 186 Q160 158 320 184 V200 H0Z" fill="#5E8F4E"/>`),
+  iceland:()=>{let st='';[[30,30],[80,18],[140,40],[200,22],[250,48],[300,28],[110,70],[290,80],[20,80],[170,12]].forEach(([x,y])=>st+=`<circle cx="${x}" cy="${y}" r="1.3" fill="#fff" opacity=".85"/>`);
+    return W(sky('gIce','#06182A','#14405A')+`<defs><linearGradient id="gAur" x1="0" x2="1"><stop offset="0" stop-color="#3DF2A0"/><stop offset=".6" stop-color="#2FD6C8"/><stop offset="1" stop-color="#8A7BFF"/></linearGradient><filter id="fBlur" x="-10%" y="-50%" width="120%" height="200%"><feGaussianBlur stdDeviation="5"/></filter></defs>`+st+`<path d="M-10 96 C60 40 120 116 180 64 S280 52 330 84" stroke="url(#gAur)" stroke-width="22" fill="none" opacity=".75" filter="url(#fBlur)"/><path d="M-10 110 C70 70 130 124 190 84 S290 76 330 100" stroke="url(#gAur)" stroke-width="8" fill="none" opacity=".55" filter="url(#fBlur)"/><polygon points="0,162 52,130 92,150 150,108 210,150 262,126 320,150 320,200 0,200" fill="#0A1520"/><rect y="176" width="320" height="24" fill="#0E2A3A"/><path d="M40 186h80M180 184h70" stroke="#3DF2A0" stroke-width="2" opacity=".35"/>`)},
+  tokyo:()=>{const bl=[[0,24,62],[26,18,84],[46,30,54],[78,16,100],[96,26,70],[124,20,88],[146,32,58],[180,22,96],[204,18,66],[226,30,80],[272,24,72],[298,22,92]];let s='';
+    bl.forEach(([x,w,h],i)=>{s+=`<rect x="${x}" y="${200-h}" width="${w}" height="${h}" fill="#2D3352"/>`;for(let r=0;r<Math.floor(h/14)-1;r++){if((i+r)%3!==0)s+=`<rect x="${x+5}" y="${200-h+8+r*14}" width="4" height="5" fill="#FFD98A" opacity=".85"/>`}});
+    return W(sky('gTok','#FFB99C','#FFE8D4')+`<circle cx="236" cy="78" r="24" fill="#E9493F"/><polygon points="70,160 150,70 230,160" fill="#8090B5"/><polygon points="150,70 131,92 141,89 150,97 160,89 170,92" fill="#fff"/><polygon points="254,200 262,52 270,200" fill="#2D3352"/><rect x="257" y="112" width="10" height="5" fill="#2D3352"/>`+s)},
+  lisbon:()=>{const cols=['#F2C14E','#E9835F','#F4EEDC','#86B9A0','#F2A65A','#9CC3DD'];let s='';let k=0;
+    [[118,10,22],[142,0,26],[168,14,24]].forEach(([y,off,w])=>{for(let x=off-8;x<330;x+=w+4){const h=22+(k%3)*4;s+=`<rect x="${x}" y="${y}" width="${w}" height="${h+30}" fill="${cols[k%cols.length]}"/><polygon points="${x-2},${y} ${x+w/2},${y-9} ${x+w+2},${y}" fill="#B5523B"/><rect x="${x+w/2-3}" y="${y+8}" width="6" height="8" fill="#2F4858" opacity=".6"/>`;k++}});
+    return W(sky('gLis','#87CDF0','#E8F7FF')+`<circle cx="260" cy="44" r="18" fill="#FFF3C4"/><path d="M0 130 Q80 96 160 118 T320 108 V200 H0Z" fill="#E6D6B8"/>`+s+`<rect x="40" y="170" width="74" height="26" rx="5" fill="#F2C230"/><rect x="48" y="176" width="14" height="10" fill="#2F4858"/><rect x="68" y="176" width="14" height="10" fill="#2F4858"/><rect x="88" y="176" width="14" height="10" fill="#2F4858"/><path d="M77 170 l10 -16" stroke="#2F4858" stroke-width="2"/>`)},
+  marrakech:()=>W(sky('gMar','#F5A65B','#FCE3C2')+`<circle cx="232" cy="98" r="42" fill="#FFE7B3"/><path d="M0 148 Q80 108 160 142 T320 132 V200 H0Z" fill="#E0A05A"/><rect x="58" y="72" width="28" height="92" fill="#9C4A2B"/><rect x="65" y="56" width="14" height="17" fill="#9C4A2B"/><circle cx="72" cy="50" r="3.5" fill="#9C4A2B"/><rect x="66" y="88" width="12" height="16" rx="6" fill="#7A3620"/><rect x="66" y="116" width="12" height="16" rx="6" fill="#7A3620"/><path d="M0 176 Q100 144 200 170 T320 164 V200 H0Z" fill="#C67838"/><path d="M262 168 c4 -18 10 -24 18 -26 M280 142 c-8 -6 -18 -4 -22 2 M280 142 c8 -8 18 -6 22 0 M280 142 c-2 -10 4 -16 12 -16" stroke="#5B3A1E" stroke-width="3" fill="none" stroke-linecap="round"/>`),
+  cappadocia:()=>{let b='';[[70,58,18,'#E4572E'],[152,38,13,'#F3A712'],[232,70,22,'#2B3A67'],[286,36,10,'#7FB069']].forEach(([x,y,r,c])=>{b+=`<ellipse cx="${x}" cy="${y}" rx="${r}" ry="${r*1.18}" fill="${c}"/><ellipse cx="${x}" cy="${y}" rx="${r*.38}" ry="${r*1.18}" fill="#fff" opacity=".28"/><path d="M${x-r*.6} ${y+r*1.0} L${x-r*.25} ${y+r*1.6} M${x+r*.6} ${y+r*1.0} L${x+r*.25} ${y+r*1.6}" stroke="#5A3B26" stroke-width="1"/><rect x="${x-r*.28}" y="${y+r*1.6}" width="${r*.56}" height="${r*.4}" fill="#5A3B26"/>`});
+    return W(sky('gCap','#B9E1F5','#FFF1DA')+b+`<path d="M0 200 V158 Q18 150 26 124 Q34 104 44 122 Q54 150 74 150 Q88 128 98 100 Q108 86 118 100 Q128 140 150 146 Q166 124 176 112 Q186 104 194 116 Q204 146 226 150 Q244 134 252 116 Q262 104 272 118 Q282 150 320 152 V200Z" fill="#D9A877"/><ellipse cx="35" cy="116" rx="11" ry="5" fill="#8C5E3C"/><ellipse cx="108" cy="92" rx="12" ry="5" fill="#8C5E3C"/><ellipse cx="185" cy="108" rx="11" ry="5" fill="#8C5E3C"/><ellipse cx="262" cy="110" rx="12" ry="5" fill="#8C5E3C"/><path d="M0 184 Q160 170 320 186 V200 H0Z" fill="#B8865A"/>`)}
+};
+
+/* ---------- data ---------- */
+const D=[
+ {id:'bali',name:'Балі',country:'Індонезія',code:'DPS',cat:'beach',nights:10,price:1290,flight:'≈ 17 год',desc:'Рисові тераси Убуду, серф на Улувату і храми на скелях над океаном.',s:[1,1,1,2,2,2,2,2,2,2,1,1]},
+ {id:'dolomites',name:'Доломіти',country:'Італія',code:'VCE',cat:'mount',nights:7,price:890,flight:'≈ 2 год',desc:'Трекінг до озера Брайєс, канатки над хребтами і гірські притулки з полентою.',s:[2,2,2,0,1,2,2,2,2,1,0,2]},
+ {id:'tokyo',name:'Токіо',country:'Японія',code:'HND',cat:'city',nights:9,price:1650,flight:'≈ 12 год',desc:'Нічна Сіндзюку, сакура в парку Уено і день біля Фудзі з видом на озеро.',s:[1,1,2,2,2,1,1,1,1,2,2,1]},
+ {id:'marrakech',name:'Марракеш',country:'Марокко',code:'RAK',cat:'exotic',nights:6,price:720,flight:'≈ 4,5 год',desc:'Ріад у медині, базари Джемаа-ель-Фна і ніч у таборі в пустелі Агафай.',s:[1,1,2,2,2,1,0,0,2,2,2,1]},
+ {id:'lisbon',name:'Лісабон',country:'Португалія',code:'LIS',cat:'city',nights:5,price:540,flight:'≈ 4 год',desc:'Трамвай 28 через Алфаму, паштейш у Белені і захід сонця на оглядовому майданчику.',s:[1,1,1,2,2,2,1,1,2,2,1,1]},
+ {id:'iceland',name:'Ісландія',country:'Ісландія',code:'KEF',cat:'mount',nights:7,price:1380,flight:'≈ 4 год',desc:'Північне сяйво, льодовикова лагуна Йокулсарлон і гарячі джерела під відкритим небом.',s:[1,2,2,0,1,2,2,2,1,1,0,1]},
+ {id:'maldives',name:'Мальдіви',country:'Мальдіви',code:'MLE',cat:'beach',nights:8,price:2100,flight:'≈ 11 год',desc:'Вілла над водою, снорклінг з мантами і піщані коси, що зникають у приплив.',s:[2,2,2,2,1,1,1,1,1,1,1,2]},
+ {id:'cappadocia',name:'Каппадокія',country:'Туреччина',code:'NAV',cat:'exotic',nights:4,price:610,flight:'≈ 5 год',desc:'Політ на повітряній кулі на світанку, печерний готель і підземні міста.',s:[1,1,1,2,2,2,1,1,2,2,1,0]}
+];
+const byId=Object.fromEntries(D.map(d=>[d.id,d]));
+const eur=n=>'€'+n.toLocaleString('uk-UA').replace(/ |,/g,' ');
+const nightsWord=n=>{const a=n%10,b=n%100;if(a===1&&b!==11)return n+' ніч';if(a>=2&&a<=4&&(b<10||b>=20))return n+' ночі';return n+' ночей'};
+const seasonText=s=>{const idx=s.map((v,i)=>v===2?i:-1).filter(i=>i>=0);if(!idx.length)return '—';
+  // find longest run (circular)
+  let best=[0,0];for(const st of idx){let len=0;while(s[(st+len)%12]===2&&len<12)len++;if(len>best[1])best=[st,len]}
+  return best[1]>=12?'цілий рік':MSHORT[best[0]]+' – '+MSHORT[(best[0]+best[1]-1)%12]};
+
+/* ---------- render cards ---------- */
+const grid=document.getElementById('grid');
+D.forEach(d=>{
+  const el=document.createElement('article');el.className='card';el.dataset.id=d.id;
+  el.innerHTML=`<div class="art">${ART[d.id]()}<span class="stamp">${d.code}</span><span class="best" hidden>Найкращий сезон</span></div>
+  <div class="c-body"><span class="c-country">${d.country}</span><h3>${d.name}</h3><p>${d.desc}</p>
+  <ul class="facts"><li>${nightsWord(d.nights)}</li><li>Переліт ${d.flight}</li></ul>
+  <div class="c-foot"><span class="price"><small>від</small>${eur(d.price)}</span><button class="pick" type="button" data-id="${d.id}">Обрати</button></div></div>`;
+  grid.appendChild(el);
+});
+const empty=document.createElement('div');empty.className='empty';empty.hidden=true;
+empty.innerHTML='<b>Таких турів поки немає</b><span>Збільште бюджет або оберіть інший місяць чи тип відпочинку.</span><button class="pick" type="button" id="reset">Скинути фільтри</button>';
+grid.appendChild(empty);
+
+/* ---------- selects ---------- */
+const fMonth=document.getElementById('fMonth'),bMonth=document.getElementById('bMonth'),bDest=document.getElementById('bDest');
+fMonth.innerHTML='<option value="-1">Будь-який</option>'+MONTHS.map((m,i)=>`<option value="${i}">${m}</option>`).join('');
+bMonth.innerHTML='<option value="">Ще не знаю</option>'+MONTHS.map((m,i)=>`<option value="${i}">${m}</option>`).join('');
+bDest.innerHTML='<option value="">Допоможіть обрати</option>'+D.map(d=>`<option value="${d.id}">${d.name}, ${d.country}</option>`).join('');
+
+/* ---------- calendar ---------- */
+const cal=document.getElementById('cal');
+function renderCal(sel){
+  let h='<thead><tr><th scope="col"><span hidden>Напрямок</span></th>'+MSHORT.map((m,i)=>`<th scope="col" class="${i===sel?'on':''}">${m}</th>`).join('')+'</tr></thead><tbody>';
+  const lbl=['не радимо','добре, з нюансами','найкращий час'];
+  D.forEach(d=>{h+=`<tr><th scope="row" class="dest">${d.name}<span>${d.code}</span></th>`+d.s.map((v,i)=>`<td class="l${v}${i===sel?' on':''}" title="${d.name}, ${MONTHS[i].toLowerCase()}: ${lbl[v]}"><span hidden>${lbl[v]}</span></td>`).join('')+'</tr>'});
+  cal.innerHTML=h+'</tbody>';
+}
+
+/* ---------- filtering ---------- */
+let cat='all';
+const fBudget=document.getElementById('fBudget'),budgetOut=document.getElementById('budgetOut'),count=document.getElementById('count');
+function apply(){
+  const m=+fMonth.value,max=+fBudget.value;
+  budgetOut.textContent='до '+eur(max);
+  let n=0;
+  grid.querySelectorAll('.card').forEach(c=>{
+    const d=byId[c.dataset.id];
+    const ok=(cat==='all'||d.cat===cat)&&d.price<=max&&(m<0||d.s[m]>=1);
+    c.hidden=!ok;if(ok)n++;
+    c.querySelector('.best').hidden=!(m>=0&&d.s[m]===2);
+  });
+  empty.hidden=n>0;
+  const w=n===1?'напрямок':(n>=2&&n<=4?'напрямки':'напрямків');
+  count.textContent=`Знайдено: ${n} ${w}`+(m>=0?` · ${MONTHS[m].toLowerCase()}`:'');
+  renderCal(m);
+}
+document.getElementById('chips').addEventListener('click',e=>{
+  const b=e.target.closest('.chip');if(!b)return;cat=b.dataset.cat;
+  document.querySelectorAll('.chip').forEach(c=>c.setAttribute('aria-pressed',c===b?'true':'false'));apply();
+});
+fMonth.addEventListener('change',apply);fBudget.addEventListener('input',apply);
+grid.addEventListener('click',e=>{
+  if(e.target.id==='reset'){cat='all';fMonth.value='-1';fBudget.value=fBudget.max;document.querySelectorAll('.chip').forEach(c=>c.setAttribute('aria-pressed',c.dataset.cat==='all'?'true':'false'));apply();return}
+  const p=e.target.closest('.pick[data-id]');if(!p)return;
+  pick(p.dataset.id,true);
+});
+
+/* ---------- ticket ---------- */
+const ticket=document.getElementById('ticket');let auto=true,ti=0;
+function setTicket(d){
+  document.getElementById('tCode').textContent=d.code;document.getElementById('tCode2').textContent=d.code;
+  document.getElementById('tCity').textContent=d.name;
+  document.getElementById('tFlight').textContent='DT '+String(1000+D.indexOf(d)*137+417).slice(-4);
+  document.getElementById('tSeason').textContent=seasonText(d.s);
+  document.getElementById('tNights').textContent=nightsWord(d.nights);
+  ticket.classList.remove('swap');void ticket.offsetWidth;ticket.classList.add('swap');
+}
+function pick(id,scroll){
+  const d=byId[id];auto=false;setTicket(d);bDest.value=id;
+  document.getElementById('tHint').textContent=`${d.name}: ${nightsWord(d.nights)}, від ${eur(d.price)}. Напрямок уже вписано в заявку.`;
+  if(scroll)document.getElementById('book').scrollIntoView({block:'start'});
+}
+const reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+if(!reduce)setInterval(()=>{if(!auto||document.hidden)return;ti=(ti+1)%D.length;setTicket(D[ti])},4500);
+
+/* ---------- form ---------- */
+const form=document.getElementById('form'),err=document.getElementById('err'),done=document.getElementById('done');
+bDest.addEventListener('change',()=>{if(bDest.value){auto=false;setTicket(byId[bDest.value])}});
+form.addEventListener('submit',e=>{
+  e.preventDefault();
+  const $=id=>document.getElementById(id);
+  const name=$('bName').value.trim(),contact=$('bContact').value.trim();
+  const problems=[];
+  if(!name)problems.push('вкажіть ім\'я');
+  if(!contact)problems.push('залиште телефон або e-mail');
+  else if(!/@/.test(contact)&&contact.replace(/\D/g,'').length<9)problems.push('перевірте контакт: потрібен e-mail або номер з кодом');
+  if(problems.length){err.textContent='Щоб надіслати заявку, '+problems.join(' і ')+'.';err.hidden=false;done.hidden=true;return}
+  err.hidden=true;
+  const d=byId[bDest.value],m=bMonth.value;
+  $('doneTitle').textContent=`Дякуємо, ${name}!`;
+  $('doneText').textContent=`Заявка: ${d?d.name:'підбір напрямку'}, ${$('bPeople').value||1} мандр.`+(m!==''?`, ${MONTHS[m].toLowerCase()}`:'')+`. Менеджер зв'яжеться за контактом ${contact}.`;
+  done.hidden=false;
+});
+
+apply();
+})();
+</script>
+
+</body>
+</html>
